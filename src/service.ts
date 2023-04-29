@@ -60,16 +60,16 @@ const main = () => {
     ].map((range) => sheet.getRange(range).getCell(1, 1).getValue() as string | undefined);
 
     if (!salesEstimationCategory || !startingBestSellerRank || !endingBestSellerRank) {
-        const ui = SpreadsheetApp.getUi();
+        const message = [
+            !salesEstimationCategory ? 'Product Category' : undefined,
+            !startingBestSellerRank ? 'Starting BSR' : undefined,
+            !endingBestSellerRank ? 'Ending BSR' : undefined,
+        ]
+            .filter((text) => !!text)
+            .map((text) => `Invalid ${text}`)
+            .join('\n');
 
-        const missingFields = [
-            !salesEstimationCategory ? 'Product Category' : '',
-            !startingBestSellerRank ? 'Starting BSR' : '',
-            !endingBestSellerRank ? 'Ending BSR' : '',
-        ].join(', ');
-
-        ui.alert(`Error: Missing ${missingFields}`);
-
+        SpreadsheetApp.getUi().alert(message);
         return;
     }
 
