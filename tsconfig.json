@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "declaration": true,
+        "lib": [
+            "dom",
+            "es6"
+        ],
+        "module": "commonjs",
+        "outDir": "./dist",
+        "target": "es6",
+        "noImplicitAny": true,
+        "types": [
+            "node",
+            "google-apps-script"
+        ],
+    },
+    "include": [
+        "src/**/*.ts",
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
