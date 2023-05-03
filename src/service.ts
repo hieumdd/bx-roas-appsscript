@@ -29,11 +29,19 @@ const getSalesEstimation = (options: GetSalesEstimationOptions) => {
         `sales_estimation_category=${encodeURIComponent(options.salesEstimationCategory)}`,
     ].join('&');
 
+    console.log({ queryString });
+
     const url = `https://api.rainforestapi.com/request?${queryString}`;
 
     try {
-        const response = UrlFetchApp.fetch(url);
+        const response = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+
         const data: GetSalesEstimationResponse = JSON.parse(response.getContentText());
+
+        if (response.getResponseCode() > 200) {
+            SpreadsheetApp.getUi().alert(data.request_info.message);
+            return;
+        }
 
         if (!data.sales_estimation.has_sales_estimation) {
             const message = [
@@ -42,11 +50,13 @@ const getSalesEstimation = (options: GetSalesEstimationOptions) => {
                 `Message: ${data.sales_estimation.message}`,
             ].join('\n');
             SpreadsheetApp.getUi().alert(message);
+            return;
         }
+
         return data.sales_estimation.monthly_sales_estimate;
     } catch (error) {
-        console.log(error);
-        SpreadsheetApp.getUi().alert(`Error: ${JSON.stringify(error)}`);
+        console.log({ error });
+        return;
     }
 };
 
@@ -56,7 +66,7 @@ const main = () => {
     const [salesEstimationCategory, startingBestSellerRank, endingBestSellerRank] = [
         'C9:C9',
         'C11:C11',
-        'C19:C19',
+        'C20:C20',
     ].map((range) => sheet.getRange(range).getCell(1, 1).getValue() as string | undefined);
 
     if (!salesEstimationCategory || !startingBestSellerRank || !endingBestSellerRank) {
@@ -75,7 +85,7 @@ const main = () => {
 
     [
         [startingBestSellerRank, 'C14:C14'],
-        [endingBestSellerRank, 'C20:C20'],
+        [endingBestSellerRank, 'C21:C21'],
     ].forEach(([bestSellerRank, range]) => {
         const estimation = getSalesEstimation({ salesEstimationCategory, bestSellerRank });
         estimation && sheet.getRange(range).getCell(1, 1).setValue(estimation);
