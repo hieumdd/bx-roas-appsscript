@@ -3,8 +3,7 @@
         "allowSyntheticDefaultImports": true,
         "declaration": true,
         "lib": [
-            "dom",
-            "es6"
+            "esnext"
         ],
         "module": "commonjs",
         "outDir": "./dist",
@@ -12,7 +11,8 @@
         "noImplicitAny": true,
         "types": [
             "node",
-            "google-apps-script"
+            "google-apps-script",
+            "./node_modules/cheerio"
         ],
     },
     "include": [
